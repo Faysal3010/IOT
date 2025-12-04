@@ -1,0 +1,43 @@
+import network
+import urequests
+import machine
+import os
+
+# ====== CONFIGURE ======
+WIFI_SSID = "YOUR_WIFI_SSID"
+WIFI_PASS = "YOUR_WIFI_PASSWORD"
+
+FIRMWARE_URL = "http://your-server.com/esp32/firmware.py"  # URL
+LOCAL_FILE = "main.py"   # ESP32-selected file
+
+# ====== CONNECT WIFI ======
+def connect_wifi():
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    if not wlan.isconnected():
+        print("Connecting to WiFi...")
+        wlan.connect(WIFI_SSID, WIFI_PASS)
+        while not wlan.isconnected():
+            pass
+    print("WiFi connected:", wlan.ifconfig())
+
+# ====== DOWNLOAD AND UPDATE ======
+def ota_update():
+    try:
+        print("Downloading new firmware...")
+        response = urequests.get(FIRMWARE_URL)
+        if response.status_code == 200:
+            new_code = response.text
+            with open(LOCAL_FILE, "w") as f:
+                f.write(new_code)
+            print("Firmware updated successfully!")
+            response.close()
+            machine.reset()  # Restart ESP32 to run new code
+        else:
+            print("Download failed:", response.status_code)
+    except Exception as e:
+        print("OTA update error:", e)
+
+# ====== MAIN ======
+connect_wifi()
+ota_update()
