@@ -1,5 +1,12 @@
+from ota import ota_update
 from machine import Pin
 import time
+
+
+ota_update()   # check update
+print("Running main app...")
+
+
 
 led = Pin(2, Pin.OUT)
 
