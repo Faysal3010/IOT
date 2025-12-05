@@ -9,6 +9,8 @@ download firmware : https://micropython.org/download/ESP32_GENERIC/
 
 
 1. Write → Flush → Sync
+
+```
 def ota_update(url):
     print("Checking OTA...")
     try:
@@ -23,7 +25,7 @@ def ota_update(url):
     except Exception as e:
         print("OTA Error:", e)
 
-
+```
 os.sync() = flash write নিশ্চিত করে
 এটা ajout করার পর update 100% proper write হবে।
 
@@ -32,7 +34,7 @@ os.sync() = flash write নিশ্চিত করে
 2. Safer method (temporary file → replace)
 
 Best practice OTA:
-
+```
 import os
 
 tmp = "main_tmp.py"
@@ -50,7 +52,7 @@ os.rename(tmp, "main.py")
 
 machine.reset()
 
-
+```
 🎯 Guarantee:
 
 corrupt file risk zero
